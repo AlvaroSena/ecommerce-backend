@@ -8,7 +8,7 @@ export class UserRepository implements IUserRepository {
   async findById(id: string): Promise<User | null> {
     const result = await db.select().from(users).where(eq(users.id, id));
 
-    if (result) {
+    if (result.length >= 1) {
       const user = new User(result[0].name, result[0].email, result[0].passwordHash, result[0].id);
 
       return user;
@@ -48,7 +48,7 @@ export class UserRepository implements IUserRepository {
     return new User(result[0].name, result[0].email, result[0].passwordHash, result[0].id);
   }
 
-  async update(user: User): Promise<User> {
+  async update(id: string, user: User): Promise<User> {
     const result = await db
       .update(users)
       .set({
@@ -56,7 +56,7 @@ export class UserRepository implements IUserRepository {
         email: user.getEmail(),
         updatedAt: sql`NOW()`,
       })
-      .where(eq(users.id, user.getId() ?? ""))
+      .where(eq(users.id, id))
       .returning();
 
     return new User(result[0].name, result[0].email, result[0].passwordHash, result[0].id);

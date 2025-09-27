@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import type { UserService } from "../services/UserService";
-import type { CreateUserDTO } from "../dtos/UserDTO";
+import type { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDTO";
 
 export class UserController {
   constructor(private service: UserService) {}
@@ -37,5 +37,30 @@ export class UserController {
     const user = await this.service.getUserById(id);
 
     return response.json(user);
+  }
+
+  async putUser(request: Request, response: Response) {
+    const id: string = request.params.id;
+    const body: UpdateUserDTO = request.body;
+
+    if (body.name.length < 3) {
+      return response.status(400).json({ error: "Name must have a least 6 characters" });
+    }
+
+    if (!body.email.includes("@")) {
+      return response.status(400).json({ error: "Invalid email." });
+    }
+
+    const user = await this.service.updateUser(id, body);
+
+    return response.json(user);
+  }
+
+  async deleteUser(request: Request, response: Response) {
+    const id: string = request.params.id;
+
+    await this.service.removeUser(id);
+
+    return response.status(204).send();
   }
 }
