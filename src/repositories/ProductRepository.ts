@@ -9,7 +9,13 @@ export class ProductRepository implements IProductRepository {
     const result = await db.select().from(products).where(eq(products.id, id));
 
     if (result.length >= 1) {
-      const product = new Product(result[0].title, result[0].description, result[0].slug, result[0].userId);
+      const product = new Product(
+        result[0].title,
+        result[0].description,
+        result[0].slug,
+        result[0].userId,
+        result[0].id,
+      );
 
       return product;
     }
@@ -21,7 +27,13 @@ export class ProductRepository implements IProductRepository {
     const result = await db.select().from(products).where(eq(products.slug, slug));
 
     if (result.length >= 1) {
-      const product = new Product(result[0].title, result[0].description, result[0].slug, result[0].userId);
+      const product = new Product(
+        result[0].title,
+        result[0].description,
+        result[0].slug,
+        result[0].userId,
+        result[0].id,
+      );
 
       return product;
     }
@@ -32,7 +44,9 @@ export class ProductRepository implements IProductRepository {
   async findAll(): Promise<Product[] | []> {
     const result = await db.select().from(products);
 
-    return result.map((product) => new Product(product.title, product.description, product.slug, product.userId));
+    return result.map(
+      (product) => new Product(product.title, product.description, product.slug, product.userId, product.id),
+    );
   }
 
   async create(product: Product): Promise<Product> {
@@ -46,7 +60,7 @@ export class ProductRepository implements IProductRepository {
       })
       .returning();
 
-    return new Product(result[0].title, result[0].description, result[0].slug, result[0].userId);
+    return new Product(result[0].title, result[0].description, result[0].slug, result[0].userId, result[0].id);
   }
 
   async update(id: string, product: Product): Promise<Product> {
@@ -57,10 +71,10 @@ export class ProductRepository implements IProductRepository {
         description: product.getDescription(),
         slug: product.getSlug(),
       })
-      .where(eq(products.userId, id))
+      .where(eq(products.id, id))
       .returning();
 
-    return new Product(result[0].title, result[0].description, result[0].slug, result[0].userId);
+    return new Product(result[0].title, result[0].description, result[0].slug, result[0].userId, result[0].id);
   }
 
   async delete(id: string): Promise<void> {

@@ -1,7 +1,11 @@
 export class Product {
-  private id?: string;
-
-  constructor(private title: string, private description: string, private slug: string, private userId: string) {}
+  constructor(
+    private title: string,
+    private description: string,
+    private slug: string,
+    private userId: string,
+    private id?: string,
+  ) {}
 
   public getId() {
     return this.id;
