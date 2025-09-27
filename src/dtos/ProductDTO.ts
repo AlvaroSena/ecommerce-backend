@@ -1,7 +1,6 @@
 export interface CreateProductDTO {
   title: string;
   description: string;
-  userId: string;
 }
 
 export interface UpdateProductDTO {

@@ -7,6 +7,7 @@ export class ProductController {
 
   async postProduct(request: Request, response: Response, next: NextFunction) {
     const body: CreateProductDTO = request.body;
+    const { sub: userId } = request.user as { sub: string };
 
     try {
       if (body.title.length < 3) {
@@ -17,7 +18,7 @@ export class ProductController {
         return response.status(400).json({ error: "Description must have a least 6 characters" });
       }
 
-      const product = await this.service.createProduct(body);
+      const product = await this.service.createProduct(userId, body);
 
       return response.status(201).json(product);
     } catch (err) {
@@ -62,6 +63,7 @@ export class ProductController {
   async putProduct(request: Request, response: Response, next: NextFunction) {
     const id: string = request.params.id;
     const body: UpdateProductDTO = request.body;
+    const { sub: userId } = request.user as { sub: string };
 
     try {
       if (body.title.length < 3) {
@@ -72,7 +74,7 @@ export class ProductController {
         return response.status(400).json({ error: "Description must have a least 6 characters" });
       }
 
-      const product = await this.service.updateProduct(id, body);
+      const product = await this.service.updateProduct(userId, id, body);
 
       return response.json(product);
     } catch (err) {
