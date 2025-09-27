@@ -20,13 +20,19 @@ export class UserRepository implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     const result = await db.select().from(users).where(eq(users.email, email));
 
-    if (result) {
+    if (result.length >= 1) {
       const user = new User(result[0].name, result[0].email, result[0].passwordHash, result[0].id);
 
       return user;
     }
 
     return null;
+  }
+
+  async findAll(): Promise<User[] | []> {
+    const result = await db.select({ id: users.id, name: users.name, email: users.email }).from(users);
+
+    return result.map((user) => new User(user.name, user.email, "", user.id));
   }
 
   async create(user: User): Promise<User> {
