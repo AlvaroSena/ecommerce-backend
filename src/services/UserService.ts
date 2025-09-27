@@ -1,5 +1,5 @@
 import { hash } from "bcryptjs";
-import { User } from "../models/User";
+import { User } from "../models/UserModel";
 import { UserNotFoundException } from "../exceptions/UserNotFoundException";
 import { EmailAlreadyTakenException } from "../exceptions/EmailAlreadyTakenException";
 import type { IUserRepository } from "../repositories/IUserRepository";

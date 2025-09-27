@@ -1,12 +1,7 @@
 export class Product {
   private id?: string;
 
-  constructor(
-    private title: string,
-    private description: string,
-    private priceInCents: number,
-    private userId: string,
-  ) {}
+  constructor(private title: string, private description: string, private slug: string, private userId: string) {}
 
   public getId() {
     return this.id;
@@ -32,12 +27,12 @@ export class Product {
     this.description = description;
   }
 
-  public getPriceInCents() {
-    return this.priceInCents;
+  public getSlug() {
+    return this.slug;
   }
 
-  public setPriceInCents(priceInCents: number) {
-    this.priceInCents = priceInCents;
+  public setSlug(slug: string) {
+    this.slug = slug;
   }
 
   public getUserId() {

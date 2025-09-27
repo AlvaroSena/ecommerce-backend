@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from "../database";
 import { users } from "../database/schema";
-import { User } from "../models/User";
+import { User } from "../models/UserModel";
 import type { IUserRepository } from "./IUserRepository";
 
 export class UserRepository implements IUserRepository {
