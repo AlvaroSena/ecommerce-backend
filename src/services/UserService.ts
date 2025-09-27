@@ -1,7 +1,9 @@
 import { hash } from "bcryptjs";
 import { User } from "../models/User";
-import type { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDTO";
+import { UserNotFoundException } from "../exceptions/UserNotFoundException";
+import { EmailAlreadyTakenException } from "../exceptions/EmailAlreadyTakenException";
 import type { IUserRepository } from "../repositories/IUserRepository";
+import type { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDTO";
 
 export class UserService {
   constructor(private repository: IUserRepository) {}
@@ -10,7 +12,7 @@ export class UserService {
     const userAlreadyExists = await this.repository.findByEmail(dto.email);
 
     if (userAlreadyExists) {
-      throw new Error();
+      throw new EmailAlreadyTakenException();
     }
 
     const user = new User(dto.name, dto.email, await hash(dto.password, 6));
@@ -27,7 +29,7 @@ export class UserService {
     const user = await this.repository.findById(id);
 
     if (!user) {
-      throw new Error();
+      throw new UserNotFoundException();
     }
 
     return {
@@ -51,7 +53,7 @@ export class UserService {
     const userFound = await this.repository.findById(id);
 
     if (!userFound) {
-      throw new Error();
+      throw new UserNotFoundException();
     }
 
     const user = new User(dto.name, dto.email, userFound.getPassword());
@@ -69,7 +71,7 @@ export class UserService {
     const userFound = await this.repository.findById(id);
 
     if (!userFound) {
-      throw new Error();
+      throw new UserNotFoundException();
     }
 
     await this.repository.delete(id);
