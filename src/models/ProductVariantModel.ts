@@ -1,12 +1,11 @@
-export class Product {
-  private id?: string;
-
+export class ProductVariant {
   constructor(
     private title: string,
     private imagesUrls: string[],
     private slug: string,
     private priceInCents: number,
     private productId: string,
+    private id?: string,
   ) {}
 
   public getId() {
