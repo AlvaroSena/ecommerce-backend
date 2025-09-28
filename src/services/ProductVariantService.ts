@@ -153,6 +153,10 @@ export class ProductVariantService {
       return url;
     });
 
-    const imagesUrls = await Promise.all(uploadPromises);
+    const urls = await Promise.all(uploadPromises);
+
+    const imagesUrls = await this.repository.updateImages(id, urls);
+
+    return imagesUrls;
   }
 }

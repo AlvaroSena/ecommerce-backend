@@ -4,6 +4,7 @@ import { ProductVariantController } from "../controllers/ProductVariantControlle
 import { ProductVariantService } from "../services/ProductVariantService";
 import { ProductVariantRepository } from "../repositories/ProductVariantRepository";
 import { ProductRepository } from "../repositories/ProductRepository";
+import { upload } from "../config/multer";
 
 export const productVariantRoutes = Router();
 
@@ -37,4 +38,12 @@ productVariantRoutes.delete(
   restVerifyToken,
   (request: Request, response: Response, next: NextFunction) =>
     productVariantController.deleteProductVariant(request, response, next),
+);
+
+productVariantRoutes.patch(
+  "/images/upload/:id",
+  restVerifyToken,
+  upload.array("images"),
+  (request: Request, response: Response, next: NextFunction) =>
+    productVariantController.patchProductVariant(request, response, next),
 );

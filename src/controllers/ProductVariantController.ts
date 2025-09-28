@@ -91,4 +91,17 @@ export class ProductVariantController {
       next(err);
     }
   }
+
+  async patchProductVariant(request: Request, response: Response, next: NextFunction) {
+    const id: string = request.params.id;
+    const files = request.files as Express.Multer.File[];
+
+    try {
+      const imagesUrls = await this.service.uploadProductVariantImages(id, { files });
+
+      return response.json(imagesUrls);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
