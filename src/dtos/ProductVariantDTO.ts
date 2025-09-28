@@ -1,7 +1,6 @@
 export interface CreateProductVariantDTO {
   title: string;
   imagesUrls: string[];
-  slug: string;
   price: number;
   productId: string;
 }

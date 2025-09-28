@@ -8,6 +8,7 @@ import type {
 } from "../dtos/ProductVariantDTO";
 import type { IProductRepository } from "../repositories/IProductRepository";
 import type { IProductVariantRepository } from "../repositories/IProductVariantRepository";
+import { VariantNotFoundException } from "../exceptions/VariantNotFoundException";
 
 export class ProductVariantService {
   constructor(private repository: IProductVariantRepository, private productRepository: IProductRepository) {}
@@ -39,17 +40,87 @@ export class ProductVariantService {
     };
   }
 
-  async getProductVariantById(id: string): Promise<ProductVariantResponseDTO> {}
+  async getProductVariantById(id: string): Promise<ProductVariantResponseDTO> {
+    const productVariant = await this.repository.findById(id);
 
-  async getProductVariantBySlug(slug: string): Promise<ProductVariantResponseDTO> {}
+    if (!productVariant) {
+      throw new VariantNotFoundException();
+    }
 
-  async getAllProductVariants(): Promise<ProductVariantResponseDTO[]> {}
+    return {
+      id: productVariant.getId(),
+      title: productVariant.getTitle(),
+      imagesUrls: productVariant.getImagesUrls(),
+      slug: productVariant.getSlug(),
+      priceInCents: productVariant.getPriceInCents(),
+      productId: productVariant.getProductId(),
+    };
+  }
 
-  async updateProductVariant(
-    userId: string,
-    id: string,
-    dto: UpdateProductVariantDTO,
-  ): Promise<ProductVariantResponseDTO> {}
+  async getProductVariantBySlug(slug: string): Promise<ProductVariantResponseDTO> {
+    const productVariant = await this.repository.findBySlug(slug);
 
-  async removeProductVariant(id: string): Promise<void> {}
+    if (!productVariant) {
+      throw new VariantNotFoundException();
+    }
+
+    return {
+      id: productVariant.getId(),
+      title: productVariant.getTitle(),
+      imagesUrls: productVariant.getImagesUrls(),
+      slug: productVariant.getSlug(),
+      priceInCents: productVariant.getPriceInCents(),
+      productId: productVariant.getProductId(),
+    };
+  }
+
+  async getAllProductVariants(): Promise<ProductVariantResponseDTO[]> {
+    const productVariants = await this.repository.findAll();
+
+    return productVariants.map((variant) => ({
+      id: variant.getId(),
+      title: variant.getTitle(),
+      imagesUrls: variant.getImagesUrls(),
+      slug: variant.getSlug(),
+      priceInCents: variant.getPriceInCents(),
+      productId: variant.getProductId(),
+    }));
+  }
+
+  async updateProductVariant(id: string, dto: UpdateProductVariantDTO): Promise<ProductVariantResponseDTO> {
+    const productVariantExists = await this.repository.findById(id);
+
+    if (!productVariantExists) {
+      throw new VariantNotFoundException();
+    }
+
+    const productVariant = new ProductVariant(
+      dto.title,
+      productVariantExists.getImagesUrls(),
+      productVariantExists.getSlug(),
+      dto.price,
+      productVariantExists.getProductId(),
+    );
+
+    const updatedProductVariant = await this.repository.update(id, productVariant);
+
+    return {
+      id: updatedProductVariant.getId(),
+      title: updatedProductVariant.getTitle(),
+      imagesUrls: updatedProductVariant.getImagesUrls(),
+      slug: updatedProductVariant.getSlug(),
+      priceInCents: updatedProductVariant.getPriceInCents(),
+      productId: updatedProductVariant.getProductId(),
+    };
+  }
+
+  async removeProductVariant(id: string): Promise<void> {
+    const productVariantExists = await this.repository.findById(id);
+
+    if (!productVariantExists) {
+      throw new VariantNotFoundException();
+    }
+
+    await this.repository.delete(id);
+  }
 }
