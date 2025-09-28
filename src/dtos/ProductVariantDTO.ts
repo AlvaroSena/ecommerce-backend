@@ -10,6 +10,10 @@ export interface UpdateProductVariantDTO {
   price: number;
 }
 
+export interface UploadProductVariantImagesDTO {
+  files: Express.Multer.File[];
+}
+
 export interface ProductVariantResponseDTO {
   id?: string;
   title: string;

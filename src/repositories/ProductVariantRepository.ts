@@ -104,4 +104,16 @@ export class ProductVariantRepository implements IProductVariantRepository {
   async delete(id: string): Promise<void> {
     await db.delete(productVariants).where(eq(productVariants.id, id));
   }
+
+  async updateImages(id: string, urls: string[]): Promise<string[]> {
+    const result = await db
+      .update(productVariants)
+      .set({
+        imagesUrls: urls,
+      })
+      .where(eq(productVariants.id, id))
+      .returning();
+
+    return result[0].imagesUrls ?? [];
+  }
 }

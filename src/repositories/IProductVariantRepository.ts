@@ -7,4 +7,5 @@ export interface IProductVariantRepository {
   create(productVariant: ProductVariant): Promise<ProductVariant>;
   update(id: string, productVariant: ProductVariant): Promise<ProductVariant>;
   delete(id: string): Promise<void>;
+  updateImages(id: string, urls: string[]): Promise<string[]>;
 }

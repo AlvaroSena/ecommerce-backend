@@ -5,10 +5,13 @@ import type {
   CreateProductVariantDTO,
   ProductVariantResponseDTO,
   UpdateProductVariantDTO,
+  UploadProductVariantImagesDTO,
 } from "../dtos/ProductVariantDTO";
 import type { IProductRepository } from "../repositories/IProductRepository";
 import type { IProductVariantRepository } from "../repositories/IProductVariantRepository";
 import { VariantNotFoundException } from "../exceptions/VariantNotFoundException";
+import { s3 } from "../config/aws/s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 export class ProductVariantService {
   constructor(private repository: IProductVariantRepository, private productRepository: IProductRepository) {}
@@ -122,5 +125,34 @@ export class ProductVariantService {
     }
 
     await this.repository.delete(id);
+  }
+
+  async uploadProductVariantImages(id: string, dto: UploadProductVariantImagesDTO) {
+    const productVariantExists = await this.repository.findById(id);
+
+    if (!productVariantExists) {
+      throw new VariantNotFoundException();
+    }
+
+    const uploadPromises = dto.files.map(async (file) => {
+      const key = `variants/${productVariantExists.getId()}-${file.originalname}`;
+
+      const bucketName = process.env.AWS_BUCKET!;
+
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: key,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        }),
+      );
+
+      const url = `https://${bucketName}.s3.${process.env.AWS_REGION!}.amazonaws.com/${key}`;
+
+      return url;
+    });
+
+    const imagesUrls = await Promise.all(uploadPromises);
   }
 }
