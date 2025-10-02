@@ -18,20 +18,24 @@ export class VariantOptionRepository implements IVariantOptionRepository {
   }
 
   async findAll(): Promise<VariantOption[] | []> {
-    // const result = await db.select().from(variantOptions);
-    //
-    // return result;
+    const result = await db.select().from(variantOptions);
+
+    return result.map((option) => new VariantOption(option.name, option.productVariantId, option.id));
   }
 
-  create(productVariant: VariantOption): Promise<VariantOption> {
-      throw new Error("Method not implemented.");
+  async create(productVariant: VariantOption): Promise<VariantOption> {
+    const result = await db.insert(variantOptions).values({ name: productVariant.getName(), productVariantId: productVariant.getProductVariantId() }).returning();
+
+    return new VariantOption(result[0].name, result[1].productVariantId, result[2].id);
   }
 
-  update(id: string, productVariant: VariantOption): Promise<VariantOption> {
-      throw new Error("Method not implemented.");
+  async update(id: string, productVariant: VariantOption): Promise<VariantOption> {
+    const result = await db.update(variantOptions).set({ name: productVariant.getName() }).where(eq(variantOptions.id, id)).returning();
+
+    return new VariantOption(result[0].name, result[1].productVariantId, result[2].id);
   }
 
-  delete(id: string): Promise<void> {
-      throw new Error("Method not implemented.");
+  async delete(id: string): Promise<void> {
+    await db.delete(variantOptions).where(eq(variantOptions.id, id));
   }
 }
