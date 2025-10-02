@@ -26,13 +26,13 @@ export class VariantOptionRepository implements IVariantOptionRepository {
   async create(productVariant: VariantOption): Promise<VariantOption> {
     const result = await db.insert(variantOptions).values({ name: productVariant.getName(), productVariantId: productVariant.getProductVariantId() }).returning();
 
-    return new VariantOption(result[0].name, result[1].productVariantId, result[2].id);
+    return new VariantOption(result[0].name, result[0].productVariantId, result[0].id);
   }
 
   async update(id: string, productVariant: VariantOption): Promise<VariantOption> {
     const result = await db.update(variantOptions).set({ name: productVariant.getName() }).where(eq(variantOptions.id, id)).returning();
 
-    return new VariantOption(result[0].name, result[1].productVariantId, result[2].id);
+    return new VariantOption(result[0].name, result[0].productVariantId, result[0].id);
   }
 
   async delete(id: string): Promise<void> {

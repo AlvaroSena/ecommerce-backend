@@ -4,6 +4,7 @@ export interface CreateVariantOptionDTO {
 }
 
 export interface UpdateVariantOptionDTO {
+  id: string;
   name: string;
 }
 
