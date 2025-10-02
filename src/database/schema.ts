@@ -43,9 +43,41 @@ export const productVariants = pgTable("product_variants", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const productVariantsRelations = relations(productVariants, ({ one }) => ({
+export const productVariantsRelations = relations(productVariants, ({ one, many }) => ({
   product: one(products, {
     fields: [productVariants.productId],
     references: [products.id],
   }),
+  options: many(variantOptions),
+}));
+
+export const variantOptions = pgTable("variant_options", {
+  id: uuid().defaultRandom().primaryKey(),
+  name: text().notNull(),
+  productVariantId: uuid("product_variant_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const variantOptionsRelations = relations(variantOptions, ({ one, many }) => ({
+  productVariant: one(productVariants, {
+    fields: [variantOptions.productVariantId],
+    references: [productVariants.id],
+  }),
+  values: many(variantOptionsValues),
+}))
+
+export const variantOptionsValues = pgTable("variant_options_values", {
+  id: uuid().defaultRandom().primaryKey(),
+  value: text().notNull(),
+  variantOptionId: uuid("variant_option_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const variantOptionsValuesRelations = relations(variantOptionsValues, ({ one, many }) => ({
+  option: one(variantOptions, {
+    fields: [variantOptionsValues.variantOptionId],
+    references: [variantOptions.id],
+  })
 }));

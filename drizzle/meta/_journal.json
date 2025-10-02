@@ -15,6 +15,20 @@
       "when": 1758993849627,
       "tag": "0001_light_tombstone",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1759361683292,
+      "tag": "0002_bouncy_serpent_society",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1759362192059,
+      "tag": "0003_real_strong_guy",
+      "breakpoints": true
     }
   ]
 }
