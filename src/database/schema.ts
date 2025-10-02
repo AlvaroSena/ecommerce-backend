@@ -1,4 +1,4 @@
-import { uuid, pgTable, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { uuid, pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
@@ -70,6 +70,7 @@ export const variantOptionsRelations = relations(variantOptions, ({ one, many })
 export const variantOptionsValues = pgTable("variant_options_values", {
   id: uuid().defaultRandom().primaryKey(),
   value: text().notNull(),
+  isSoldOut: boolean("is_sold_out").notNull(),
   variantOptionId: uuid("variant_option_id").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

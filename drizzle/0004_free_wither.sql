@@ -1,0 +1,1 @@
+ALTER TABLE "variant_options_values" ADD COLUMN "is_sold_out" boolean NOT NULL;
