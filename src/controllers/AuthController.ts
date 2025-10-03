@@ -16,9 +16,9 @@ export class AuthController {
         response.status(400).json({ message: "Password is too short" });
       }
 
-      const { accessToken: token } = await this.service.login(body.email, body.password);
+      const { accessToken, refreshToken } = await this.service.login(body.email, body.password);
 
-      response.cookie("token", token, {
+      response.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false, // 🔥 set true in production with HTTPS
         sameSite: "lax",
@@ -26,7 +26,7 @@ export class AuthController {
       });
 
       return response.status(201).json({
-        token,
+        accessToken,
       });
     } catch (err) {
       next(err);
@@ -34,7 +34,28 @@ export class AuthController {
   }
 
   async postLogout(request: Request, response: Response, next: NextFunction) {
-    response.clearCookie("token");
+    response.clearCookie("refreshToken");
     response.json({ message: "Logged out" });
+  }
+
+  async postRefresh(request: Request, response: Response, next: NextFunction) {
+    const token = request.cookies.refreshToken;
+
+    if (!token) return response.sendStatus(401);
+
+    try {
+      const { refreshToken, accessToken } = await this.service.refresh(token);
+
+      response.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+        path: "/",
+      });
+
+      return response.status(201).json({ accessToken });
+    } catch (err) {
+      next(err);
+    }
   }
 }

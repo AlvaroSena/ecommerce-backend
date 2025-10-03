@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { UserController } from "../controllers/UserController";
 import { UserService } from "../services/UserService";
 import { UserRepository } from "../repositories/UserRepository";
+import { restVerifyToken } from "../middlewares/restVerifyToken";
 
 export const userRoutes = Router();
 
@@ -23,4 +24,7 @@ userRoutes.put("/update/:id", (request: Request, response: Response, next: NextF
 );
 userRoutes.delete("/delete/:id", (request: Request, response: Response, next: NextFunction) =>
   userController.deleteUser(request, response, next),
+);
+userRoutes.get("/profile/me", restVerifyToken, (request: Request, response: Response, next: NextFunction) =>
+  userController.getUserProfile(request, response, next),
 );

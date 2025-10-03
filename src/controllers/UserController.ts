@@ -51,6 +51,20 @@ export class UserController {
     }
   }
 
+  async getUserProfile(request: Request, response: Response, next: NextFunction) {
+    const { sub } = request.user as { sub: string };
+
+    try {
+      const user = await this.service.getUserProfile(sub);
+
+      return response.json({
+        user: user.name,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async putUser(request: Request, response: Response, next: NextFunction) {
     const id: string = request.params.id;
     const body: UpdateUserDTO = request.body;

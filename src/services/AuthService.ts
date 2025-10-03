@@ -1,7 +1,10 @@
 import { compare } from "bcryptjs";
-import { sign } from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import { InvalidCredentialsException } from "../exceptions/InvalidCredentialsException";
+import { generateTokens } from "../utils/generateTokens";
+import { ResourceNotFoundException } from "../exceptions/ResourceNotFoundException";
 import type { IUserRepository } from "../repositories/IUserRepository";
+import type { UserPayloadDTO } from "../dtos/UserPayloadDTO";
 
 export class AuthService {
   constructor(private repository: IUserRepository) {}
@@ -19,11 +22,26 @@ export class AuthService {
       throw new InvalidCredentialsException();
     }
 
-    const accessToken = sign({ sub: user.getId(), email: user.getEmail() }, process.env.AUTH_SECRET!, {
-      expiresIn: "1h",
-    });
+    const userId = user.getId();
+
+    if (!userId) {
+      throw new ResourceNotFoundException("User not found");
+    }
+
+    const { refreshToken, accessToken } = generateTokens({ sub: userId });
 
     return {
+      refreshToken,
+      accessToken,
+    };
+  }
+
+  async refresh(token: string) {
+    const payload = verify(token, process.env.AUTH_SECRET!) as UserPayloadDTO;
+    const { refreshToken, accessToken } = generateTokens({ sub: payload.sub });
+
+    return {
+      refreshToken,
       accessToken,
     };
   }

@@ -39,6 +39,18 @@ export class UserService {
     };
   }
 
+  async getUserProfile(id: string) {
+    const user = await this.repository.findById(id);
+
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return {
+      name: user.getName(),
+    };
+  }
+
   async getAllUsers(): Promise<UserResponseDTO[]> {
     const users = await this.repository.findAll();
 
