@@ -19,8 +19,8 @@ export class AuthService {
       throw new InvalidCredentialsException();
     }
 
-    const accessToken = sign({ sub: user.getId() }, process.env.AUTH_SECRET!, {
-      expiresIn: "1d",
+    const accessToken = sign({ sub: user.getId(), email: user.getEmail() }, process.env.AUTH_SECRET!, {
+      expiresIn: "1h",
     });
 
     return {
