@@ -25,8 +25,13 @@ export class VariantOptionValueRepository
     return null;
   }
 
-  async findAll(): Promise<VariantOptionValue[] | []> {
-    const result = await db.select().from(variantOptionsValues);
+  async findAllByOptionId(
+    optionId: string,
+  ): Promise<VariantOptionValue[] | []> {
+    const result = await db
+      .select()
+      .from(variantOptionsValues)
+      .where(eq(variantOptionsValues.variantOptionId, optionId));
 
     return result.map(
       (item) =>
@@ -78,6 +83,13 @@ export class VariantOptionValueRepository
       result[0].variantOptionId,
       result[0].id,
     );
+  }
+
+  async updateIsSoldOut(id: string, isSoldOut: boolean): Promise<void> {
+    await db
+      .update(variantOptionsValues)
+      .set({ isSoldOut })
+      .where(eq(variantOptionsValues.id, id));
   }
 
   async delete(id: string): Promise<void> {

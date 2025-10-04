@@ -29,7 +29,7 @@ variantOptionValueRoutes.post(
 );
 
 variantOptionValueRoutes.get(
-  "/",
+  "/optionId/:optionId",
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionValueController.getVariantOptionValues(
       request,
@@ -49,6 +49,17 @@ variantOptionValueRoutes.put(
   restVerifyToken,
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionValueController.putVariantOptionValue(request, response, next),
+);
+
+variantOptionValueRoutes.patch(
+  "/update/sold-out/:id",
+  restVerifyToken,
+  (request: Request, response: Response, next: NextFunction) =>
+    variantOptionValueController.patchVariantOptionValue(
+      request,
+      response,
+      next,
+    ),
 );
 
 variantOptionValueRoutes.delete(

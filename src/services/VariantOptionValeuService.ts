@@ -57,8 +57,16 @@ export class VariantOptionValueService {
     };
   }
 
-  async getAllVariantOptionValues(): Promise<VariantOptionValueResponseDTO[]> {
-    const optionValues = await this.repository.findAll();
+  async getAllVariantOptionValues(
+    optionId: string,
+  ): Promise<VariantOptionValueResponseDTO[]> {
+    const optionExists = await this.variantOptionRepository.findById(optionId);
+
+    if (!optionExists) {
+      throw new ResourceNotFoundException("Option not found.");
+    }
+
+    const optionValues = await this.repository.findAllByOptionId(optionId);
 
     return optionValues.map((value) => ({
       id: value.getId(),
@@ -92,6 +100,19 @@ export class VariantOptionValueService {
       isSoldOut: updatedOptionValue.getIsSoldOut(),
       variantOptionId: updatedOptionValue.getVariantOptionId(),
     };
+  }
+
+  async updateVariantOptionValueIsSoldOut(
+    id: string,
+    isSoldOut: boolean,
+  ): Promise<void> {
+    const optionValueExists = await this.repository.findById(id);
+
+    if (!optionValueExists) {
+      throw new ResourceNotFoundException("Option value not found");
+    }
+
+    await this.repository.updateIsSoldOut(id, isSoldOut);
   }
 
   async removeVariantOptionValue(id: string): Promise<void> {

@@ -44,8 +44,15 @@ export class VariantOptionValueController {
     response: Response,
     next: NextFunction,
   ) {
+    const optionId = request.params.optionId;
+
     try {
-      const optionValues = await this.service.getAllVariantOptionValues();
+      if (!optionId) {
+        return response.status(400).json({ error: "Missing option id." });
+      }
+
+      const optionValues =
+        await this.service.getAllVariantOptionValues(optionId);
 
       return response.json(optionValues);
     } catch (err) {
@@ -100,6 +107,27 @@ export class VariantOptionValueController {
       );
 
       return response.json(updatedOptionValue);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async patchVariantOptionValue(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ) {
+    const id: string = request.params.id;
+    const body: { isSoldOut: boolean } = request.body;
+
+    try {
+      if (body.isSoldOut === null) {
+        return response.status(400).json({ error: "Missing is sold out." });
+      }
+
+      await this.service.updateVariantOptionValueIsSoldOut(id, body.isSoldOut);
+
+      return response.status(204).send();
     } catch (err) {
       next(err);
     }
