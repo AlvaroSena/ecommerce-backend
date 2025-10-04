@@ -20,12 +20,14 @@ orderRoutes.post(
 
 orderRoutes.get(
   "/",
+  restVerifyCustomerToken,
   (request: Request, response: Response, next: NextFunction) =>
     orderController.getOrders(request, response, next),
 );
 
 orderRoutes.get(
   "/:id",
+  restVerifyCustomerToken,
   (request: Request, response: Response, next: NextFunction) =>
     orderController.getOrder(request, response, next),
 );

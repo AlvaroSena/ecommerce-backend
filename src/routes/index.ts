@@ -6,6 +6,7 @@ import { productVariantRoutes } from "./product-variants.routes";
 import { variantOptionRoutes } from "./variant-option.routes";
 import { variantOptionValueRoutes } from "./variant-option-value.routes";
 import { orderRoutes } from "./order.routes";
+import { orderItemRoutes } from "./order-item.routes";
 
 export const routes = Router();
 routes.use("/auth", authRoutes);
@@ -15,3 +16,4 @@ routes.use("/variants", productVariantRoutes);
 routes.use("/variants-options", variantOptionRoutes);
 routes.use("/variants-options-values", variantOptionValueRoutes);
 routes.use("/orders", orderRoutes);
+routes.use("/order-items", orderItemRoutes);
