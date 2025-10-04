@@ -3,7 +3,11 @@ import { User } from "../models/UserModel";
 import { UserNotFoundException } from "../exceptions/UserNotFoundException";
 import { EmailAlreadyTakenException } from "../exceptions/EmailAlreadyTakenException";
 import type { IUserRepository } from "../repositories/IUserRepository";
-import type { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDTO";
+import type {
+  CreateUserDTO,
+  UpdateUserDTO,
+  UserResponseDTO,
+} from "../dtos/UserDTO";
 
 export class UserService {
   constructor(private repository: IUserRepository) {}
@@ -15,13 +19,21 @@ export class UserService {
       throw new EmailAlreadyTakenException();
     }
 
-    const user = new User(dto.name, dto.email, await hash(dto.password, 6));
+    const userRole = "customer";
+
+    const user = new User(
+      dto.name,
+      dto.email,
+      await hash(dto.password, 6),
+      userRole,
+    );
     const createdUser = await this.repository.create(user);
 
     return {
       id: createdUser.getId(),
       name: createdUser.getName(),
       email: createdUser.getEmail(),
+      role: user.getRole(),
     };
   }
 
@@ -36,6 +48,7 @@ export class UserService {
       id: user.getId(),
       name: user.getName(),
       email: user.getEmail(),
+      role: user.getRole(),
     };
   }
 
@@ -58,6 +71,7 @@ export class UserService {
       id: user.getId(),
       name: user.getName(),
       email: user.getEmail(),
+      role: user.getRole(),
     }));
   }
 
@@ -76,6 +90,7 @@ export class UserService {
       id: updatedUser.getId(),
       name: updatedUser.getName(),
       email: updatedUser.getEmail(),
+      role: user.getRole(),
     };
   }
 

@@ -1,11 +1,22 @@
-import { uuid, pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
+import {
+  uuid,
+  pgTable,
+  pgEnum,
+  text,
+  integer,
+  timestamp,
+  boolean,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+
+export const userRoleEnum = pgEnum("user_role", ["admin", "customer"]);
 
 export const users = pgTable("users", {
   id: uuid().defaultRandom().primaryKey(),
   name: text().notNull(),
   email: text().notNull().unique(),
   passwordHash: text("password_hash").notNull(),
+  role: userRoleEnum("role").notNull().default("customer"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -43,13 +54,16 @@ export const productVariants = pgTable("product_variants", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const productVariantsRelations = relations(productVariants, ({ one, many }) => ({
-  product: one(products, {
-    fields: [productVariants.productId],
-    references: [products.id],
+export const productVariantsRelations = relations(
+  productVariants,
+  ({ one, many }) => ({
+    product: one(products, {
+      fields: [productVariants.productId],
+      references: [products.id],
+    }),
+    options: many(variantOptions),
   }),
-  options: many(variantOptions),
-}));
+);
 
 export const variantOptions = pgTable("variant_options", {
   id: uuid().defaultRandom().primaryKey(),
@@ -59,13 +73,16 @@ export const variantOptions = pgTable("variant_options", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const variantOptionsRelations = relations(variantOptions, ({ one, many }) => ({
-  productVariant: one(productVariants, {
-    fields: [variantOptions.productVariantId],
-    references: [productVariants.id],
+export const variantOptionsRelations = relations(
+  variantOptions,
+  ({ one, many }) => ({
+    productVariant: one(productVariants, {
+      fields: [variantOptions.productVariantId],
+      references: [productVariants.id],
+    }),
+    values: many(variantOptionsValues),
   }),
-  values: many(variantOptionsValues),
-}))
+);
 
 export const variantOptionsValues = pgTable("variant_options_values", {
   id: uuid().defaultRandom().primaryKey(),
@@ -76,9 +93,12 @@ export const variantOptionsValues = pgTable("variant_options_values", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const variantOptionsValuesRelations = relations(variantOptionsValues, ({ one, many }) => ({
-  option: one(variantOptions, {
-    fields: [variantOptionsValues.variantOptionId],
-    references: [variantOptions.id],
-  })
-}));
+export const variantOptionsValuesRelations = relations(
+  variantOptionsValues,
+  ({ one, many }) => ({
+    option: one(variantOptions, {
+      fields: [variantOptionsValues.variantOptionId],
+      references: [variantOptions.id],
+    }),
+  }),
+);

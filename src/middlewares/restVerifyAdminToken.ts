@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
+import { UserRepository } from "../repositories/UserRepository";
 
 interface Payload {
   sub: string;
@@ -11,7 +12,11 @@ declare module "express-serve-static-core" {
   }
 }
 
-export function restVerifyToken(request: Request, reply: Response, next: NextFunction) {
+export async function restVerifyAdminToken(
+  request: Request,
+  reply: Response,
+  next: NextFunction,
+) {
   const authHeader = request.headers["authorization"];
 
   const token = authHeader && authHeader.split(" ")[1];
@@ -22,6 +27,17 @@ export function restVerifyToken(request: Request, reply: Response, next: NextFun
 
   try {
     const payload = verify(token, process.env.AUTH_SECRET!) as Payload;
+    const userRepository = new UserRepository();
+
+    const user = await userRepository.findById(payload.sub);
+
+    if (!user) {
+      return reply.status(401).json({ message: "User not found" });
+    }
+
+    if (user.getRole() !== "admin") {
+      return reply.status(401).json({ message: "Unauthorized" });
+    }
 
     request.user = payload;
     next();

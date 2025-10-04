@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { restVerifyToken } from "../middlewares/restVerifyToken";
+import { restVerifyAdminToken } from "../middlewares/restVerifyAdminToken";
 import { VariantOptionValueController } from "../controllers/VariantOptionValueController";
 import { VariantOptionValueService } from "../services/VariantOptionValeuService";
 import { VariantOptionValueRepository } from "../repositories/VariantOptionValueRepository";
@@ -19,7 +19,7 @@ const variantOptionValueController = new VariantOptionValueController(
 
 variantOptionValueRoutes.post(
   "/",
-  restVerifyToken,
+  restVerifyAdminToken,
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionValueController.postVariantValueOption(
       request,
@@ -46,14 +46,14 @@ variantOptionValueRoutes.get(
 
 variantOptionValueRoutes.put(
   "/update/:id",
-  restVerifyToken,
+  restVerifyAdminToken,
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionValueController.putVariantOptionValue(request, response, next),
 );
 
 variantOptionValueRoutes.patch(
   "/update/sold-out/:id",
-  restVerifyToken,
+  restVerifyAdminToken,
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionValueController.patchVariantOptionValue(
       request,
@@ -64,7 +64,7 @@ variantOptionValueRoutes.patch(
 
 variantOptionValueRoutes.delete(
   "/delete/:id",
-  restVerifyToken,
+  restVerifyAdminToken,
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionValueController.deleteVariantOptionValue(
       request,

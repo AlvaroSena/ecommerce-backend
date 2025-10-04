@@ -1,9 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { EmailAlreadyTakenException } from "../exceptions/EmailAlreadyTakenException";
 import { UserNotFoundException } from "../exceptions/UserNotFoundException";
-import {ResourceNotFoundException} from "../exceptions/ResourceNotFoundException";
+import { ResourceNotFoundException } from "../exceptions/ResourceNotFoundException";
 
-export function restExceptionHandler(err: any, request: Request, response: Response, next: NextFunction) {
+export function restExceptionHandler(
+  err: any,
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) {
   let statusCode = 500;
   let message = "Internal server error";
 
@@ -22,7 +27,6 @@ export function restExceptionHandler(err: any, request: Request, response: Respo
       statusCode = err.statusCode;
       message = err.message;
       break;
-
 
     default:
       console.log("Error: ", err);

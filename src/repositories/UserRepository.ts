@@ -9,7 +9,13 @@ export class UserRepository implements IUserRepository {
     const result = await db.select().from(users).where(eq(users.id, id));
 
     if (result.length >= 1) {
-      const user = new User(result[0].name, result[0].email, result[0].passwordHash, result[0].id);
+      const user = new User(
+        result[0].name,
+        result[0].email,
+        result[0].passwordHash,
+        result[0].role,
+        result[0].id,
+      );
 
       return user;
     }
@@ -21,7 +27,13 @@ export class UserRepository implements IUserRepository {
     const result = await db.select().from(users).where(eq(users.email, email));
 
     if (result.length >= 1) {
-      const user = new User(result[0].name, result[0].email, result[0].passwordHash, result[0].id);
+      const user = new User(
+        result[0].name,
+        result[0].email,
+        result[0].passwordHash,
+        result[0].role,
+        result[0].id,
+      );
 
       return user;
     }
@@ -30,9 +42,18 @@ export class UserRepository implements IUserRepository {
   }
 
   async findAll(): Promise<User[] | []> {
-    const result = await db.select({ id: users.id, name: users.name, email: users.email }).from(users);
+    const result = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+      })
+      .from(users);
 
-    return result.map((user) => new User(user.name, user.email, "", user.id));
+    return result.map(
+      (user) => new User(user.name, user.email, "", user.role, user.id),
+    );
   }
 
   async create(user: User): Promise<User> {
@@ -45,7 +66,13 @@ export class UserRepository implements IUserRepository {
       })
       .returning();
 
-    return new User(result[0].name, result[0].email, result[0].passwordHash, result[0].id);
+    return new User(
+      result[0].name,
+      result[0].email,
+      result[0].passwordHash,
+      result[0].role,
+      result[0].id,
+    );
   }
 
   async update(id: string, user: User): Promise<User> {
@@ -59,7 +86,13 @@ export class UserRepository implements IUserRepository {
       .where(eq(users.id, id))
       .returning();
 
-    return new User(result[0].name, result[0].email, result[0].passwordHash, result[0].id);
+    return new User(
+      result[0].name,
+      result[0].email,
+      result[0].passwordHash,
+      result[0].role,
+      result[0].id,
+    );
   }
 
   async delete(id: string): Promise<void> {

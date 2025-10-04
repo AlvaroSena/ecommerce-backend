@@ -28,7 +28,10 @@ export class AuthService {
       throw new ResourceNotFoundException("User not found");
     }
 
-    const { refreshToken, accessToken } = generateTokens({ sub: userId });
+    const { refreshToken, accessToken } = generateTokens({
+      sub: userId,
+      role: user.getRole(),
+    });
 
     return {
       refreshToken,
@@ -38,7 +41,10 @@ export class AuthService {
 
   async refresh(token: string) {
     const payload = verify(token, process.env.AUTH_SECRET!) as UserPayloadDTO;
-    const { refreshToken, accessToken } = generateTokens({ sub: payload.sub });
+    const { refreshToken, accessToken } = generateTokens({
+      sub: payload.sub,
+      role: payload.role,
+    });
 
     return {
       refreshToken,

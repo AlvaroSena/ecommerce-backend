@@ -1,5 +1,15 @@
+import { userRoleEnum } from "../database/schema";
+
+export type UserRole = (typeof userRoleEnum.enumValues)[number];
+
 export class User {
-  constructor(private name: string, private email: string, private password: string, private id?: string) {}
+  constructor(
+    private name: string,
+    private email: string,
+    private password: string,
+    private role: UserRole,
+    private id?: string,
+  ) {}
 
   public getId() {
     return this.id;
@@ -31,5 +41,13 @@ export class User {
 
   public setPassword(password: string) {
     this.password = password;
+  }
+
+  public getRole() {
+    return this.role;
+  }
+
+  public setRole(role: UserRole) {
+    this.role = role;
   }
 }

@@ -3,7 +3,7 @@ import { VariantOptionController } from "../controllers/VariantOptionController"
 import { VariantOptionService } from "../services/VariantOptionService";
 import { VariantOptionRepository } from "../repositories/VariantOptionRepository";
 import { ProductVariantRepository } from "../repositories/ProductVariantRepository";
-import { restVerifyToken } from "../middlewares/restVerifyToken";
+import { restVerifyAdminToken } from "../middlewares/restVerifyAdminToken";
 
 export const variantOptionRoutes = Router();
 
@@ -19,7 +19,7 @@ const variantOptionController = new VariantOptionController(
 
 variantOptionRoutes.post(
   "/",
-  restVerifyToken,
+  restVerifyAdminToken,
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionController.postVariantOption(request, response, next),
 );
@@ -38,14 +38,14 @@ variantOptionRoutes.get(
 
 variantOptionRoutes.put(
   "/update/:id",
-  restVerifyToken,
+  restVerifyAdminToken,
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionController.putVariantOption(request, response, next),
 );
 
 variantOptionRoutes.delete(
   "/delete/:id",
-  restVerifyToken,
+  restVerifyAdminToken,
   (request: Request, response: Response, next: NextFunction) =>
     variantOptionController.deleteVariantOption(request, response, next),
 );
