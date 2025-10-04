@@ -5,7 +5,6 @@ export interface CreateVariantOptionValueDTO {
 }
 
 export interface UpdateVariantOptionValueDTO {
-  id: string;
   value: string;
   isSoldOut: boolean;
 }

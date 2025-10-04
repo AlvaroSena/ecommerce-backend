@@ -1,13 +1,22 @@
-import {CreateVariantOptionDTO, UpdateVariantOptionDTO, VariantOptionResponseDTO} from "../dtos/VariantOptionDTO";
-import {IVariantOptionRepository} from "../repositories/IVariantOptionRepository";
-import {IProductVariantRepository} from "../repositories/IProductVariantRepository";
-import {VariantOption} from "../models/VariantOptionModel";
-import {ResourceNotFoundException} from "../exceptions/ResourceNotFoundException";
+import {
+  CreateVariantOptionDTO,
+  UpdateVariantOptionDTO,
+  VariantOptionResponseDTO,
+} from "../dtos/VariantOptionDTO";
+import { IVariantOptionRepository } from "../repositories/IVariantOptionRepository";
+import { IProductVariantRepository } from "../repositories/IProductVariantRepository";
+import { VariantOption } from "../models/VariantOptionModel";
+import { ResourceNotFoundException } from "../exceptions/ResourceNotFoundException";
 
 export class VariantOptionService {
-  constructor(private repository: IVariantOptionRepository, private variantRepository: IProductVariantRepository) {}
+  constructor(
+    private repository: IVariantOptionRepository,
+    private variantRepository: IProductVariantRepository,
+  ) {}
 
-  async createVariantOption(dto: CreateVariantOptionDTO): Promise<VariantOptionResponseDTO> {
+  async createVariantOption(
+    dto: CreateVariantOptionDTO,
+  ): Promise<VariantOptionResponseDTO> {
     const variant = await this.variantRepository.findById(dto.productVariantId);
 
     if (!variant) {
@@ -22,7 +31,7 @@ export class VariantOptionService {
       id: createdVariantOption.getId(),
       name: createdVariantOption.getName(),
       productVariantId: createdVariantOption.getProductVariantId(),
-    }
+    };
   }
 
   async getVariantOptionById(id: string): Promise<VariantOptionResponseDTO> {
@@ -36,7 +45,7 @@ export class VariantOptionService {
       id: variantOption.getId(),
       name: variantOption.getName(),
       productVariantId: variantOption.getProductVariantId(),
-    }
+    };
   }
 
   async getAllVariantOptions(): Promise<VariantOptionResponseDTO[]> {
@@ -49,22 +58,30 @@ export class VariantOptionService {
     }));
   }
 
-  async updateVariantOption(dto: UpdateVariantOptionDTO): Promise<VariantOptionResponseDTO> {
+  async updateVariantOption(
+    dto: UpdateVariantOptionDTO,
+  ): Promise<VariantOptionResponseDTO> {
     const variantOptionExists = await this.repository.findById(dto.id);
 
     if (!variantOptionExists) {
       throw new ResourceNotFoundException("Variant not found.");
     }
 
-    const variantOption = new VariantOption(dto.name, variantOptionExists.getProductVariantId());
+    const variantOption = new VariantOption(
+      dto.name,
+      variantOptionExists.getProductVariantId(),
+    );
 
-    const updatedVariantOption = await this.repository.update(dto.id, variantOption);
+    const updatedVariantOption = await this.repository.update(
+      dto.id,
+      variantOption,
+    );
 
     return {
       id: updatedVariantOption.getId(),
       name: updatedVariantOption.getName(),
       productVariantId: updatedVariantOption.getProductVariantId(),
-    }
+    };
   }
 
   async removeVariantOption(id: string): Promise<void> {

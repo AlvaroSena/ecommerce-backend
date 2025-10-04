@@ -1,13 +1,13 @@
-import express from "express";
+import express, { type Application } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { routes } from "./routes";
 import { restExceptionHandler } from "./middlewares/restExceptionHandler";
 
-export const app = express();
+export const app: Application = express();
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.WEB_ORIGIN!,
     credentials: true,
   }),
 );
