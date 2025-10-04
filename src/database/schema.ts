@@ -10,6 +10,12 @@ import {
 import { relations } from "drizzle-orm";
 
 export const userRoleEnum = pgEnum("user_role", ["admin", "customer"]);
+export const orderStatusEnum = pgEnum("order_status", [
+  "pending",
+  "paid",
+  "cancelled",
+  "shipped",
+]);
 
 export const users = pgTable("users", {
   id: uuid().defaultRandom().primaryKey(),
@@ -23,6 +29,7 @@ export const users = pgTable("users", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   products: many(products),
+  orders: many(orders),
 }));
 
 export const products = pgTable("products", {
@@ -99,6 +106,58 @@ export const variantOptionsValuesRelations = relations(
     option: one(variantOptions, {
       fields: [variantOptionsValues.variantOptionId],
       references: [variantOptions.id],
+    }),
+  }),
+);
+
+export const orders = pgTable("orders", {
+  id: uuid().defaultRandom().primaryKey(),
+  userId: uuid("user_id").notNull(),
+  status: orderStatusEnum("order_status").notNull().default("pending"),
+  totalInCents: integer("total_in_cents").notNull(),
+  shippingAddress: text("shipping_address").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  user: one(users, {
+    fields: [orders.userId],
+    references: [users.id],
+  }),
+  items: many(orderItems),
+}));
+
+export const orderItems = pgTable("order_items", {
+  id: uuid().defaultRandom().primaryKey(),
+  orderId: uuid("order_id").notNull(),
+  quantity: integer("quantity").notNull(),
+  unitPriceInCents: integer("unit_price_in_cents").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const orderItemsRelations = relations(orderItems, ({ one, many }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+}));
+
+export const orderItemDetails = pgTable("order_items_details", {
+  id: uuid().defaultRandom().primaryKey(),
+  orderItemId: uuid("order_item_id").notNull(),
+  productVariantId: uuid("product_variant_id").notNull(),
+  variantOptionId: uuid("variant_option_id").notNull(),
+  variantOptionValueId: uuid("variant_option_value_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const orderItemDetailsRelations = relations(
+  orderItemDetails,
+  ({ one }) => ({
+    orderItem: one(orderItems, {
+      fields: [orderItemDetails.orderItemId],
+      references: [orderItems.id],
     }),
   }),
 );
