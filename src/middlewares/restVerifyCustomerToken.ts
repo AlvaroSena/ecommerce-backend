@@ -12,7 +12,7 @@ declare module "express-serve-static-core" {
   }
 }
 
-export async function restVerifyAdminToken(
+export async function restVerifyCustomerToken(
   request: Request,
   reply: Response,
   next: NextFunction,
@@ -35,7 +35,7 @@ export async function restVerifyAdminToken(
       return reply.status(401).json({ message: "User not found" });
     }
 
-    if (user.getRole() !== "admin") {
+    if (user.getRole() !== "customer") {
       return reply.status(401).json({ message: "Unauthorized" });
     }
 
