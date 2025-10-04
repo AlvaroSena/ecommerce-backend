@@ -2,13 +2,25 @@ import { Product } from "../models/ProductModel";
 import { slugify } from "../utils/slugify";
 import { ProductNotFoundException } from "../exceptions/ProductNotFoundException";
 import type { IProductRepository } from "../repositories/IProductRepository";
-import type { CreateProductDTO, UpdateProductDTO, ProductResponseDTO } from "../dtos/ProductDTO";
+import type {
+  CreateProductDTO,
+  UpdateProductDTO,
+  ProductResponseDTO,
+} from "../dtos/ProductDTO";
 
 export class ProductService {
   constructor(private repository: IProductRepository) {}
 
-  async createProduct(userId: string, dto: CreateProductDTO): Promise<ProductResponseDTO> {
-    const product = new Product(dto.title, dto.description, slugify(dto.title), userId);
+  async createProduct(
+    userId: string,
+    dto: CreateProductDTO,
+  ): Promise<ProductResponseDTO> {
+    const product = new Product(
+      dto.title,
+      dto.description,
+      slugify(dto.title),
+      userId,
+    );
 
     const createdProduct = await this.repository.create(product);
 
@@ -65,14 +77,23 @@ export class ProductService {
     }));
   }
 
-  async updateProduct(userId: string, id: string, dto: UpdateProductDTO): Promise<ProductResponseDTO> {
+  async updateProduct(
+    userId: string,
+    id: string,
+    dto: UpdateProductDTO,
+  ): Promise<ProductResponseDTO> {
     const productExists = await this.repository.findById(id);
 
     if (!productExists) {
       throw new ProductNotFoundException();
     }
 
-    const product = new Product(dto.title, dto.description, slugify(dto.title), userId);
+    const product = new Product(
+      dto.title,
+      dto.description,
+      slugify(dto.title),
+      userId,
+    );
 
     const updatedProduct = await this.repository.update(id, product);
 
