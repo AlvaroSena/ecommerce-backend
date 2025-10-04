@@ -21,7 +21,7 @@ export class VariantOptionValueController {
         return response.status(400).json({ error: "Missing option value" });
       }
 
-      if (!body.isSoldOut) {
+      if (body.isSoldOut === null) {
         return response.status(400).json({ error: "Missing is sold out." });
       }
 
@@ -45,6 +45,9 @@ export class VariantOptionValueController {
     next: NextFunction,
   ) {
     try {
+      const optionValues = await this.service.getAllVariantOptionValues();
+
+      return response.json(optionValues);
     } catch (err) {
       next(err);
     }
@@ -61,6 +64,10 @@ export class VariantOptionValueController {
       if (!id) {
         return response.status(400).json({ error: "Missing id." });
       }
+
+      const optionValue = await this.service.getVariantOptionValueById(id);
+
+      return response.json(optionValue);
     } catch (err) {
       next(err);
     }
@@ -79,13 +86,20 @@ export class VariantOptionValueController {
         return response.status(400).json({ error: "Missing option value" });
       }
 
-      if (!body.isSoldOut) {
+      if (body.isSoldOut === null) {
         return response.status(400).json({ error: "Missing is sold out." });
       }
 
       if (!id) {
         return response.status(400).json({ error: "Missing id." });
       }
+
+      const updatedOptionValue = await this.service.updateVariantOptionValue(
+        id,
+        body,
+      );
+
+      return response.json(updatedOptionValue);
     } catch (err) {
       next(err);
     }
@@ -99,6 +113,9 @@ export class VariantOptionValueController {
     const id: string = request.params.id;
 
     try {
+      await this.service.removeVariantOptionValue(id);
+
+      return response.status(204).send();
     } catch (err) {
       next(err);
     }
