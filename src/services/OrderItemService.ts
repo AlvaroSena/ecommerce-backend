@@ -4,7 +4,7 @@ import {
   UpdateOrderItemDTO,
 } from "../dtos/OrderItemDTO";
 import { ResourceNotFoundException } from "../exceptions/ResourceNotFoundException";
-import { OrderItem } from "../models/OrderItem";
+import { OrderItem } from "../models/OrderItemModel";
 import { IOrderItemRepository } from "../repositories/IOrderItemRepository";
 import { IOrderRepository } from "../repositories/IOrderRepository";
 

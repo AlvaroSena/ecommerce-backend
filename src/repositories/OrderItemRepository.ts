@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "../database";
 import { orderItems } from "../database/schema";
-import { OrderItem } from "../models/OrderItem";
+import { OrderItem } from "../models/OrderItemModel";
 import { IOrderItemRepository } from "./IOrderItemRepository";
 
 export class OrderItemRepository implements IOrderItemRepository {

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { EmailAlreadyTakenException } from "../exceptions/EmailAlreadyTakenException";
 import { UserNotFoundException } from "../exceptions/UserNotFoundException";
 import { ResourceNotFoundException } from "../exceptions/ResourceNotFoundException";
+import { InvalidCredentialsException } from "../exceptions/InvalidCredentialsException";
 
 export function restExceptionHandler(
   err: any,
@@ -24,6 +25,11 @@ export function restExceptionHandler(
       break;
 
     case err instanceof ResourceNotFoundException:
+      statusCode = err.statusCode;
+      message = err.message;
+      break;
+
+    case err instanceof InvalidCredentialsException:
       statusCode = err.statusCode;
       message = err.message;
       break;

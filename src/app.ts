@@ -9,9 +9,13 @@ app.use(
   cors({
     origin: process.env.WEB_ORIGIN!,
     credentials: true,
-  }),
+  })
 );
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1", routes);
 app.use(restExceptionHandler);
+
+app.get("/", (req, res) => {
+  return res.json({ message: "hello" });
+});
